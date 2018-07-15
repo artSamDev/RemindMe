@@ -9,7 +9,15 @@ import android.widget.TimePicker;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+import dev.samoilov.artur.remindmeapp.R;
+
+public class TimePickerFragment extends DialogFragment{
+
+    TimePickerDialog.OnTimeSetListener callBack;
+
+    public void setTime(TimePickerDialog.OnTimeSetListener callBack){
+        this.callBack = callBack;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -19,11 +27,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int hour = calendar.get(Calendar.HOUR);
         int minute = calendar.get(Calendar.MINUTE);
 
-        return new TimePickerDialog(getActivity(),this,hour,minute, false);
+        return new TimePickerDialog(getActivity(), R.style.DialogTheme,callBack,hour,minute, true);
     }
 
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-    }
 }

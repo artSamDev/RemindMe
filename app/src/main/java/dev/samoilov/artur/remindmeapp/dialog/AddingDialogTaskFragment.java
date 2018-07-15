@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +25,7 @@ import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
 
 public class AddingDialogTaskFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener,  TimePickerDialog.OnTimeSetListener {
+        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     EditText edTitle, edDate, edTime;
     AddingTaskListener addingTaskListener;
@@ -37,6 +38,7 @@ public class AddingDialogTaskFragment extends DialogFragment
 
 
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -51,12 +53,10 @@ public class AddingDialogTaskFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_title);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-
         final View view = inflater.inflate(R.layout.dialog_task, null);
 
         final TextInputLayout tilTitle = view.findViewById(R.id.tilTaskTitle);
@@ -68,16 +68,13 @@ public class AddingDialogTaskFragment extends DialogFragment
         TextInputLayout tilTime = view.findViewById(R.id.tilTaskTime);
         edTime = tilTime.getEditText();
 
-        edDate.setHint(getResources().getString(R.string.title_date));
-        edTime.setHint(getResources().getString(R.string.title_time));
-
         builder.setView(view);
-
 
         edDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment datePickerDialog = new DatePickerFragment();
+                DatePickerFragment datePickerDialog = new DatePickerFragment();
+                datePickerDialog.setCallBack(AddingDialogTaskFragment.this);
                 datePickerDialog.show(getFragmentManager(), "DatePickerFragment");
             }
         });
@@ -85,8 +82,9 @@ public class AddingDialogTaskFragment extends DialogFragment
         edTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timePickerFragment = new TimePickerFragment();
-                timePickerFragment.show(getFragmentManager(),"TimePickerFragment");
+                TimePickerFragment timePickerFragment = new TimePickerFragment();
+                timePickerFragment.setTime(AddingDialogTaskFragment.this);
+                timePickerFragment.show(getFragmentManager(), "TimePickerFragment");
             }
         });
 
@@ -119,6 +117,11 @@ public class AddingDialogTaskFragment extends DialogFragment
                 edTitle.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (s.length() == 0) {
                             buttonPositive.setEnabled(false);
                             tilTitle.setError(getResources().getString(R.string.title_is_emty));
@@ -126,11 +129,6 @@ public class AddingDialogTaskFragment extends DialogFragment
                             buttonPositive.setEnabled(true);
                             tilTitle.setErrorEnabled(false);
                         }
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                     }
 
                     @Override
@@ -148,15 +146,15 @@ public class AddingDialogTaskFragment extends DialogFragment
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year,month,dayOfMonth);
-        edDate.setText(Utils.getTime(calendar.getTimeInMillis()));
+        calendar.set(year, month, dayOfMonth);
+        edDate.setText(Utils.getDate(calendar.getTimeInMillis()));
 
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(0,0,0,hourOfDay,minute);
+        calendar.set(0, 0, 0, hourOfDay, minute);
         edTime.setText(Utils.getTime(calendar.getTimeInMillis()));
     }
 }
