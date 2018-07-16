@@ -2,9 +2,7 @@ package dev.samoilov.artur.remindmeapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +14,19 @@ import android.widget.Toast;
 
 import dev.samoilov.artur.remindmeapp.adapters.TabAdapter;
 import dev.samoilov.artur.remindmeapp.dialog.AddingDialogTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
+import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener {
 
     FragmentManager fragmentManager;
+
+    TabAdapter tabAdapter;
+
+    CurrentTaskFragment currentTaskFragment;
+    DoneTaskFragment doneTaskFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +44,11 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
             @Override
             public void onClick(View view) {
                 AddingDialogTaskFragment addingDialogTaskFragment = new AddingDialogTaskFragment();
-                addingDialogTaskFragment.show(getFragmentManager(),"AddingDialogTaskFragment");
+                addingDialogTaskFragment.show(getFragmentManager(), "AddingDialogTaskFragment");
             }
         });
+
+        currentTaskFragment = new CurrentTaskFragment();
     }
 
     @Override
@@ -65,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
     }
 
 
-    public void setUI(){
+    public void setUI() {
 
         Toolbar toolbar = findViewById(R.id.toolBar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_history));
 
         final ViewPager viewPager = findViewById(R.id.view_pager);
-        final TabAdapter tabAdapter = new TabAdapter(fragmentManager,2);
+        tabAdapter = new TabAdapter(fragmentManager, 2);
 
         viewPager.setAdapter(tabAdapter);
 
@@ -99,11 +108,14 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
             }
         });
 
+        currentTaskFragment = (CurrentTaskFragment) tabAdapter.getItem(TabAdapter.TASK_FRAGMENT_POSITION);
+        doneTaskFragment = (DoneTaskFragment) tabAdapter.getItem(TabAdapter.HISTORY_FRAGMENT_POSITION);
+
     }
 
     @Override
-    public void onTaskAdded() {
-        Toast.makeText(this, "Task adding", Toast.LENGTH_SHORT).show();
+    public void onTaskAdded(ModelTask newTask) {
+        currentTaskFragment.addTask(newTask);
     }
 
     @Override

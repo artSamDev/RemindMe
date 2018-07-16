@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,19 +22,20 @@ import java.util.Calendar;
 
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
+import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 public class AddingDialogTaskFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    EditText edTitle, edDate, edTime;
-    AddingTaskListener addingTaskListener;
+    private EditText edTitle, edDate, edTime;
+    private AddingTaskListener addingTaskListener;
+    private Calendar calendar;
 
     public interface AddingTaskListener {
 
-        void onTaskAdded();
+        void onTaskAdded(ModelTask newTask);
 
         void onTaskAddingCancel();
-
 
     }
 
@@ -70,6 +70,10 @@ public class AddingDialogTaskFragment extends DialogFragment
 
         builder.setView(view);
 
+        final ModelTask task = new ModelTask();
+
+        calendar = Calendar.getInstance();
+
         edDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +95,11 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addingTaskListener.onTaskAdded();
+                task.setTask(edTitle.getText().toString());
+                if (edDate.length()!=0 || edTime.length()!=0){
+                    task.setDate(calendar.getTimeInMillis());
+                }
+                 addingTaskListener.onTaskAdded(task);
                 dialog.dismiss();
             }
         });
@@ -109,6 +117,7 @@ public class AddingDialogTaskFragment extends DialogFragment
             @Override
             public void onShow(DialogInterface dialog) {
                 final Button buttonPositive = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                buttonPositive.setTextColor(getResources().getColor(R.color.colorPrimary));
                 if (edTitle.length() == 0) {
                     buttonPositive.setEnabled(false);
                     tilTitle.setError(getResources().getString(R.string.title_is_emty));
@@ -145,16 +154,15 @@ public class AddingDialogTaskFragment extends DialogFragment
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, dayOfMonth);
+        calendar.set(year,month,dayOfMonth);
         edDate.setText(Utils.getDate(calendar.getTimeInMillis()));
-
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(0, 0, 0, hourOfDay, minute);
+        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+        calendar.set(Calendar.MINUTE,minute);
+        calendar.set(Calendar.SECOND,0);
         edTime.setText(Utils.getTime(calendar.getTimeInMillis()));
     }
 }
