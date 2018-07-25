@@ -13,12 +13,15 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import dev.samoilov.artur.remindmeapp.adapters.TabAdapter;
+import dev.samoilov.artur.remindmeapp.database.DBHelper;
 import dev.samoilov.artur.remindmeapp.dialog.AddingDialogTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.TaskFragment;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener {
+public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener
+        , CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener {
 
     FragmentManager fragmentManager;
 
@@ -27,11 +30,15 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
     CurrentTaskFragment currentTaskFragment;
     DoneTaskFragment doneTaskFragment;
 
+    public DBHelper dbHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new DBHelper(getApplicationContext());
 
         fragmentManager = getSupportFragmentManager();
 
@@ -109,11 +116,22 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
 
     @Override
     public void onTaskAdded(ModelTask newTask) {
-        currentTaskFragment.addTask(newTask);
+        currentTaskFragment.addTask(newTask, true);
     }
 
     @Override
     public void onTaskAddingCancel() {
         Toast.makeText(this, "Task canceled", Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void onTaskDone(ModelTask modelTask) {
+        doneTaskFragment.addTask(modelTask, false);
+    }
+
+    @Override
+    public void onTaskRestore(ModelTask modelTask) {
+        currentTaskFragment.addTask(modelTask, false);
     }
 }

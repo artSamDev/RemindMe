@@ -13,9 +13,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -68,9 +71,28 @@ public class AddingDialogTaskFragment extends DialogFragment
         TextInputLayout tilTime = view.findViewById(R.id.tilTaskTime);
         edTime = tilTime.getEditText();
 
+        Spinner spPriority = view.findViewById(R.id.spTaskPriority);
+
         builder.setView(view);
 
         final ModelTask task = new ModelTask();
+
+        ArrayAdapter<String> priorityAdapter = new ArrayAdapter<String>(getActivity()
+                ,android.R.layout.simple_spinner_dropdown_item,ModelTask.PRIORITY_LEVEL);
+
+        spPriority.setAdapter(priorityAdapter);
+
+        spPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                task.setPriority(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         calendar = Calendar.getInstance();
 
@@ -95,7 +117,7 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                task.setTask(edTitle.getText().toString());
+                task.setTitle(edTitle.getText().toString());
                 if (edDate.length()!=0 || edTime.length()!=0){
                     task.setDate(calendar.getTimeInMillis());
                 }
