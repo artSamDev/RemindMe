@@ -14,13 +14,7 @@ import dev.samoilov.artur.remindmeapp.adapters.CurrentTaskAdapter;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 
-public class CurrentTaskFragment extends Fragment {
-
-    private RecyclerView rvTaskFrag;
-    private RecyclerView.LayoutManager layoutManager;
-
-    CurrentTaskAdapter adapter;
-
+public class CurrentTaskFragment extends TaskFragment {
 
     public CurrentTaskFragment() {
         // Required empty public constructor
@@ -33,33 +27,16 @@ public class CurrentTaskFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_task, container, false);
 
-        rvTaskFrag = rootView.findViewById(R.id.rvTaskFragment);
+        recyclerView = rootView.findViewById(R.id.rvTaskFragment);
 
         layoutManager = new LinearLayoutManager(getActivity());
-        rvTaskFrag.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new CurrentTaskAdapter();
-        rvTaskFrag.setAdapter(adapter);
+        adapter = new CurrentTaskAdapter(this);
+        recyclerView.setAdapter(adapter);
 
         return rootView;
     }
 
-    public void addTask(ModelTask newTask){
-        int position = -1;
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            if (adapter.getItem(i).isTask()){
-                ModelTask task = (ModelTask) adapter.getItem(i);
-                if (newTask.getDate()< task.getDate()){
-                    position = i;
-                    break;
-                }
-            }
-        }
-        if (position!= -1){
-            adapter.addItem(position, newTask);
-        }else{
-            adapter.addItem(newTask);
-        }
-    }
 
 }

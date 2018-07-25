@@ -6,4 +6,12 @@
 
     <color name="white">#ffffff</color>
     <color name="dark_grey">#454545</color>
+
+    <color name="priority_high">#F44336</color>
+    <color name="priority_medium">#03A9F4</color>
+    <color name="priority_low">#CDDC39</color>
+
+    <color name="priority_high_selected">#EF9A9A</color>
+    <color name="priority_medium_selected">#81D4FA</color>
+    <color name="priority_low_selected">#E6EE9C</color>
 </resources>

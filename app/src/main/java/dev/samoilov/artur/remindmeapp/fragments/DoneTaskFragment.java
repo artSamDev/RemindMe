@@ -15,10 +15,9 @@ import dev.samoilov.artur.remindmeapp.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DoneTaskFragment extends Fragment {
+public class DoneTaskFragment extends TaskFragment {
 
-    RecyclerView rvHistoryTasks;
-    RecyclerView.LayoutManager layoutManager;
+
 
     public DoneTaskFragment() {
         // Required empty public constructor
@@ -30,10 +29,10 @@ public class DoneTaskFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-        rvHistoryTasks = rootView.findViewById(R.id.rvHistoryFragment);
+        recyclerView = rootView.findViewById(R.id.rvHistoryFragment);
 
         layoutManager = new LinearLayoutManager(getActivity());
-        rvHistoryTasks.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
 
         return rootView;
     }
