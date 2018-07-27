@@ -116,7 +116,7 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                task.setTask(edTitle.getText().toString());
+                task.setTitle(edTitle.getText().toString());
                 if (edDate.length()!=0 || edTime.length()!=0){
                     task.setDate(calendar.getTimeInMillis());
                 }

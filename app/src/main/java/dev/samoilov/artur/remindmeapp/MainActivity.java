@@ -1,6 +1,8 @@
 package dev.samoilov.artur.remindmeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -13,12 +15,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import dev.samoilov.artur.remindmeapp.adapters.TabAdapter;
+import dev.samoilov.artur.remindmeapp.database.DBHelper;
 import dev.samoilov.artur.remindmeapp.dialog.AddingDialogTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener {
+public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener
+        , CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener {
 
     FragmentManager fragmentManager;
 
@@ -27,11 +31,15 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
     CurrentTaskFragment currentTaskFragment;
     DoneTaskFragment doneTaskFragment;
 
+    public DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new DBHelper(getApplicationContext());
+
 
         fragmentManager = getSupportFragmentManager();
 
@@ -109,11 +117,21 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
 
     @Override
     public void onTaskAdded(ModelTask newTask) {
-        currentTaskFragment.addTask(newTask);
+        currentTaskFragment.addTask(newTask, true);
     }
 
     @Override
     public void onTaskAddingCancel() {
         Toast.makeText(this, "Task canceled", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTaskDone(ModelTask task) {
+      doneTaskFragment.addTask(task, false);
+    }
+
+    @Override
+    public void onTaskRestore(ModelTask task) {
+        currentTaskFragment.addTask(task, false);
     }
 }

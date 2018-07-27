@@ -14,34 +14,30 @@ import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
-import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.TaskFragment;
 import dev.samoilov.artur.remindmeapp.model.Item;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class CurrentTaskAdapter extends TaskAdapter {
+public class DoneTaskAdapter extends TaskAdapter {
 
-    private static final int TYPE_TASK = 0;
-    private static final int TYPE_SEPARATOR = 1;
-
-    public CurrentTaskAdapter(CurrentTaskFragment taskFragment) {
+    public DoneTaskAdapter(DoneTaskFragment taskFragment) {
         super(taskFragment);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        switch (viewType) {
-            case TYPE_TASK:
-                View v = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.model_task, viewGroup, false);
-                TextView title = (TextView) v.findViewById(R.id.tvTaskTitle);
-                TextView date = (TextView) v.findViewById(R.id.tvTaskDate);
-                CircleImageView priority = (CircleImageView) v.findViewById(R.id.cvTaskPriority);
 
-                return new TaskViewHolder(v, title, date, priority);
-            default:
-                return null;
-        }
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.model_task, viewGroup, false);
+        TextView title =  v.findViewById(R.id.tvTaskTitle);
+        TextView date =  v.findViewById(R.id.tvTaskDate);
+        CircleImageView priority =  v.findViewById(R.id.cvTaskPriority);
+
+        return new TaskViewHolder(v, title, date, priority);
+
+
     }
 
     @Override
@@ -65,26 +61,27 @@ public class CurrentTaskAdapter extends TaskAdapter {
 
             itemView.setVisibility(View.VISIBLE);
 
-            itemView.setBackgroundColor(resources.getColor(R.color.grey_50));
+            itemView.setBackgroundColor(resources.getColor(R.color.grey_200));
 
-            taskViewHolder.title.setTextColor(resources.getColor(android.R.color.primary_text_light));
-            taskViewHolder.date.setTextColor(resources.getColor(android.R.color.secondary_text_light));
+            taskViewHolder.title.setTextColor(resources.getColor(R.color.primary_text_disabled_material_light));
+            taskViewHolder.date.setTextColor(resources.getColor(R.color.secondary_text_disabled_material_light));
             taskViewHolder.priority.setColorFilter(resources.getColor(task.getPriorityColor()));
-            taskViewHolder.priority.setImageResource(R.drawable.circle);
+            taskViewHolder.priority.setImageResource(R.drawable.ic_check_circle_white_48dp);
 
             taskViewHolder.priority.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    task.setStatus(ModelTask.STATUS_DONE);
-                    taskFragment.activity.dbHelper.update().status(task.getTimeStamp(), ModelTask.STATUS_DONE);
+                    task.setStatus(ModelTask.STATUS_CURRENT);
+                    taskFragment.activity.dbHelper.update().status(task.getTimeStamp(), ModelTask.STATUS_CURRENT);
 
-                    itemView.setBackgroundColor(resources.getColor(R.color.grey_200));
+                    itemView.setBackgroundColor(resources.getColor(R.color.grey_50));
 
-                    taskViewHolder.title.setTextColor(resources.getColor(R.color.disabled_text_title));
-                    taskViewHolder.date.setTextColor(resources.getColor(R.color.disabled_text_date));
+                    taskViewHolder.title.setTextColor(resources.getColor(R.color.primary_text_default_material_light));
+                    taskViewHolder.date.setTextColor(resources.getColor(R.color.secondary_text_default_material_light));
                     taskViewHolder.priority.setColorFilter(resources.getColor(task.getPriorityColor()));
 
-                    ObjectAnimator flipIn = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", -180f, 0f);
+                    ObjectAnimator flipIn = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", 180f, 0f);
+                    taskViewHolder.priority.setImageResource(R.drawable.circle);
 
                     flipIn.addListener(new Animator.AnimatorListener() {
                         @Override
@@ -94,14 +91,13 @@ public class CurrentTaskAdapter extends TaskAdapter {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (task.getStatus() == ModelTask.STATUS_DONE) {
-                                taskViewHolder.priority.setImageResource(R.drawable.ic_check_circle_white_48dp);
+                            if (task.getStatus() != ModelTask.STATUS_DONE) {
 
                                 ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", 0f, itemView.getWidth());
+                                        "translationX", 0f, -itemView.getWidth());
 
                                 ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", itemView.getWidth(), 0f);
+                                        "translationX", -itemView.getWidth(), 0f);
 
 
                                 translationX.addListener(new Animator.AnimatorListener() {
@@ -115,7 +111,6 @@ public class CurrentTaskAdapter extends TaskAdapter {
                                         itemView.setVisibility(View.GONE);
                                         taskFragment.moveTask(task);
                                         removeItem(taskViewHolder.getAdapterPosition());
-
                                     }
 
                                     @Override
@@ -155,15 +150,4 @@ public class CurrentTaskAdapter extends TaskAdapter {
         }
 
     }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (getItem(position).isTask()) {
-            return TYPE_TASK;
-        } else {
-            return TYPE_SEPARATOR;
-        }
-    }
-
-
 }
