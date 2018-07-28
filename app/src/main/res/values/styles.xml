@@ -9,13 +9,10 @@
 
         <item name="android:actionOverflowButtonStyle">@style/ActionButtonOverflow</item>
     </style>
-    
-    <style name="SplashScreenTheme" parent="android:Theme.Black.NoTitleBar.Fullscreen">
-        <item name="android:background">@color/colorPrimaryDark</item>
-    </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorPrimaryDark</item>
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
     </style>
 
