@@ -8,8 +8,6 @@ public class ModelTask implements Item {
     public static final int PRIORITY_MEDIUM = 1;
     public static final int PRIORITY_HIGH = 2;
 
-    public static final String[] PRIORITY_LEVELS = {"LOW priority", "MEDIYM priority", "HIGH priority"};
-
     public static final int STATUS_OVERDUE = 0;
     public static final int STATUS_CURRENT = 1;
     public static final int STATUS_DONE = 2;
@@ -18,17 +16,19 @@ public class ModelTask implements Item {
     private long date;
     private int priority;
     private int status;
+    private long timeStamp;
 
 
     public ModelTask() {
         this.status = -1;
     }
 
-    public ModelTask(String task, long date, int priority, int status) {
+    public ModelTask(String task, long date, int priority, int status, long timeStamp) {
         this.task = task;
         this.date = date;
         this.priority = priority;
         this.status = status;
+        this.timeStamp = timeStamp;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ModelTask implements Item {
         }
     }
 
-    public String getTask() {
+    public String getTitle() {
         return task;
     }
 
@@ -79,9 +79,13 @@ public class ModelTask implements Item {
         return status;
     }
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
     //set
 
-    public void setTask(String task) {
+    public void setTitle(String task) {
         this.task = task;
     }
 
@@ -95,5 +99,9 @@ public class ModelTask implements Item {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

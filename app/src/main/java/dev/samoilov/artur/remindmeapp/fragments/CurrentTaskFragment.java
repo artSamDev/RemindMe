@@ -8,8 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.adapters.CurrentTaskAdapter;
+import dev.samoilov.artur.remindmeapp.database.DBHelper;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 
@@ -52,6 +56,17 @@ public class CurrentTaskFragment extends TaskFragment {
         recyclerView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void addTaskFromDB() {
+        List<ModelTask> tasks = new ArrayList<>();
+        tasks.addAll(activity.dbHelper.query().getTasks(DBHelper.SELECTION_STATUS + " OR "
+                + DBHelper.SELECTION_STATUS, new String[]{Integer.toString(ModelTask.STATUS_CURRENT),
+                Integer.toString(ModelTask.STATUS_OVERDUE)}, DBHelper.TASK_DATE_COLUMN));
+        for (int i = 0; i < tasks.size(); i++) {
+            addTask(tasks.get(i), false);
+        }
     }
 
 

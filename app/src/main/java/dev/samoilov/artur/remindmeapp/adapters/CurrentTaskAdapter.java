@@ -58,7 +58,7 @@ public class CurrentTaskAdapter extends TaskAdapter {
             final View itemView = taskViewHolder.itemView;
             final Resources resources = itemView.getResources();
 
-            taskViewHolder.title.setText(modelTask.getTask());
+            taskViewHolder.title.setText(modelTask.getTitle());
             if (modelTask.getDate() != 0) {
                 taskViewHolder.date.setText(Utils.getFullDate(modelTask.getDate()));
             } else {
