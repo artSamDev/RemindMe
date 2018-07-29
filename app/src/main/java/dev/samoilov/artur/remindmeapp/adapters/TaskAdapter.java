@@ -28,7 +28,7 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void addItem(Item item) {
         items.add(item);
-        notifyItemInserted(getItemCount() - 1);
+        notifyItemInserted(getItemCount()-1);
     }
 
     public void addItem(int position, Item item) {
@@ -36,10 +36,10 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyItemInserted(position);
     }
 
-    public void removeItem(int location) {
-        if (location >= 0 && location < getItemCount() - 1) {
-            items.remove(location);
-            notifyItemRemoved(location);
+    public void removeItem(int position) {
+        if (position >= 0 && position < getItemCount() - 1) {
+            items.remove(position);
+            notifyItemRemoved(position);
         }
     }
 

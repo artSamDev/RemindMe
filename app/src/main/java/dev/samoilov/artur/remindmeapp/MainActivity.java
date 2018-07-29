@@ -18,7 +18,8 @@ import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener {
+public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener
+        , CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener{
 
     FragmentManager fragmentManager;
 
@@ -115,5 +116,15 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
     @Override
     public void onTaskAddingCancel() {
         Toast.makeText(this, "Task canceled", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTaskDone(ModelTask task) {
+        doneTaskFragment.addTask(task);
+    }
+
+    @Override
+    public void onTaskRestore(ModelTask task) {
+        currentTaskFragment.addTask(task);
     }
 }

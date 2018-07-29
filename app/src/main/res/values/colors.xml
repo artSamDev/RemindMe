@@ -7,6 +7,12 @@
     <color name="white">#ffffff</color>
     <color name="dark_grey">#454545</color>
 
+    <color name="gray_50">#fafafa</color>
+    <color name="gray_200">#eeeeee</color>
+
+    <color name="disable_title_text">#757575</color>
+    <color name="disable_date_text">#bdbdbd</color>
+
     <color name="priority_high">#F44336</color>
     <color name="priority_medium">#03A9F4</color>
     <color name="priority_low">#CDDC39</color>

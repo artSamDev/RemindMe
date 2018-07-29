@@ -14,16 +14,15 @@ import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
-import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
+import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
 import dev.samoilov.artur.remindmeapp.model.Item;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class CurrentTaskAdapter extends TaskAdapter {
-
+public class DoneTaskAdapter extends TaskAdapter {
     private static final int TYPE_TASK = 0;
     private static final int TYPE_SEPARATOR = 1;
 
-    public CurrentTaskAdapter(CurrentTaskFragment taskFragment) {
+    public DoneTaskAdapter(DoneTaskFragment taskFragment) {
         super(taskFragment);
     }
 
@@ -67,24 +66,24 @@ public class CurrentTaskAdapter extends TaskAdapter {
 
             itemView.setVisibility(View.VISIBLE);
 
-            taskViewHolder.title.setTextColor(resources.getColor(android.R.color.primary_text_light));
-            taskViewHolder.date.setTextColor(resources.getColor(android.R.color.secondary_text_light));
+            taskViewHolder.itemView.setBackgroundColor(resources.getColor(R.color.gray_200));
+
+            taskViewHolder.title.setTextColor(resources.getColor(R.color.disable_title_text));
+            taskViewHolder.date.setTextColor(resources.getColor(R.color.disable_date_text));
             taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
-            taskViewHolder.priority.setImageResource(R.drawable.circle);
+            taskViewHolder.priority.setImageResource(R.drawable.check_circle);
 
             taskViewHolder.priority.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     modelTask.setStatus(ModelTask.STATUS_DONE);
 
-                    taskViewHolder.itemView.setBackgroundColor(resources.getColor(R.color.gray_50));
-
-                    taskViewHolder.title.setTextColor(resources.getColor(R.color.disable_title_text));
-                    taskViewHolder.date.setTextColor(resources.getColor(R.color.disable_date_text));
+                    taskViewHolder.title.setTextColor(resources.getColor(android.R.color.primary_text_light));
+                    taskViewHolder.date.setTextColor(resources.getColor(android.R.color.secondary_text_light));
                     taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
-                    taskViewHolder.priority.setImageResource(R.drawable.check_circle);
+                    taskViewHolder.priority.setImageResource(R.drawable.circle);
 
-                    ObjectAnimator animator = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", -180f, 0f);
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", 180f, 0f);
 
                     animator.addListener(new Animator.AnimatorListener() {
                         @Override
@@ -94,45 +93,43 @@ public class CurrentTaskAdapter extends TaskAdapter {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            if (modelTask.getStatus() == ModelTask.STATUS_DONE) {
-                                taskViewHolder.priority.setImageResource(R.drawable.check_circle);
 
-                                ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", 0f, itemView.getWidth());
+                            ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
+                                    "translationX", 0f, itemView.getWidth());
 
-                                ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", itemView.getWidth(), 0f);
+                            ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
+                                    "translationX", itemView.getWidth(), 0f);
 
-                                translationX.addListener(new Animator.AnimatorListener() {
-                                    @Override
-                                    public void onAnimationStart(Animator animation) {
+                            translationX.addListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
 
-                                    }
+                                }
 
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        itemView.setVisibility(View.GONE);
-                                        taskFragment.moveTask(modelTask);
-                                        removeItem(taskViewHolder.getLayoutPosition());
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    itemView.setVisibility(View.GONE);
+                                    taskFragment.moveTask(modelTask);
+                                    removeItem(taskViewHolder.getLayoutPosition());
 
-                                    }
+                                }
 
-                                    @Override
-                                    public void onAnimationCancel(Animator animation) {
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
 
-                                    }
+                                }
 
-                                    @Override
-                                    public void onAnimationRepeat(Animator animation) {
+                                @Override
+                                public void onAnimationRepeat(Animator animation) {
 
-                                    }
-                                });
+                                }
+                            });
 
-                                AnimatorSet translationSet = new AnimatorSet();
-                                translationSet.play(translationX).before(translationXBack);
-                                translationSet.start();
+                            AnimatorSet translationSet = new AnimatorSet();
+                            translationSet.play(translationX).before(translationXBack);
+                            translationSet.start();
 
-                            }
+
                         }
 
                         @Override
@@ -153,15 +150,4 @@ public class CurrentTaskAdapter extends TaskAdapter {
             });
         }
     }
-
-
-    @Override
-    public int getItemViewType(int position) {
-        if (getItem(position).isTask()) {
-            return TYPE_TASK;
-        } else {
-            return TYPE_SEPARATOR;
-        }
-    }
-
 }
