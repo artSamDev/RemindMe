@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.CurrentTaskFragment">
+    tools:context=".fragments.DoneTaskFragment"
+    android:background="@color/gray_50">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvTaskFragment"
+        android:id="@+id/rvDoneTaskFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:clipToPadding="false"
         android:paddingBottom="88dp"/>
-
 
 </FrameLayout>
