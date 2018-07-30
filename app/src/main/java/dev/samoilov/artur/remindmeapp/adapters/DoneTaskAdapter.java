@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -73,6 +74,21 @@ public class DoneTaskAdapter extends TaskAdapter {
             taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
             taskViewHolder.priority.setImageResource(R.drawable.check_circle);
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getTaskFragment().removeTaskDialog(taskViewHolder.getLayoutPosition());
+                        }
+                    }, 1000);
+
+                    return true;
+                }
+            });
+
             taskViewHolder.priority.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -84,6 +100,8 @@ public class DoneTaskAdapter extends TaskAdapter {
                     taskViewHolder.date.setTextColor(resources.getColor(android.R.color.secondary_text_light));
                     taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
                     taskViewHolder.priority.setImageResource(R.drawable.circle);
+
+
 
                     ObjectAnimator animator = ObjectAnimator.ofFloat(taskViewHolder.priority, "rotationY", 180f, 0f);
 

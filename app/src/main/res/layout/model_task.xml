@@ -1,45 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    android:layout_height="56dp"
-    android:background="?android:attr/selectableItemBackground">
+    android:layout_height="56dp">
 
-    <TextView
-        android:id="@+id/tvTaskTitle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginLeft="65sp"
-        android:layout_marginStart="65sp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@id/tvTaskDate"
-        android:layout_toStartOf="@id/tvTaskDate" />
+        android:layout_height="56dp"
+        android:background="?android:attr/selectableItemBackground">
 
+        <TextView
+            android:id="@+id/tvTaskTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="65sp"
+            android:layout_marginStart="65sp"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_toLeftOf="@id/tvTaskDate"
+            android:layout_toStartOf="@id/tvTaskDate"
+            android:textSize="17sp" />
 
-    <TextView
-        android:id="@+id/tvTaskDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="right"
-        android:layout_margin="@dimen/fab_margin"/>
+        <TextView
+            android:id="@+id/tvTaskDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:gravity="right"
+            android:textSize="12sp" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/cvTaskPriority"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_centerInParent="true"
-        android:src="@color/dark_grey"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="@dimen/fab_margin"
-        android:layout_alignParentLeft="true" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cvTaskPriority"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginTop="8dp"
+            android:src="@color/dark_grey" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

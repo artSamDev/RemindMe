@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -74,6 +75,21 @@ public class CurrentTaskAdapter extends TaskAdapter {
             taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
             taskViewHolder.priority.setImageResource(R.drawable.circle);
 
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getTaskFragment().removeTaskDialog(taskViewHolder.getLayoutPosition());
+                        }
+                    }, 1000);
+
+                    return true;
+                }
+            });
+
             taskViewHolder.priority.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -100,10 +116,10 @@ public class CurrentTaskAdapter extends TaskAdapter {
                                 taskViewHolder.priority.setImageResource(R.drawable.check_circle);
 
                                 ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", 0f, itemView.getWidth());
+                                        "translationX", 0f, -itemView.getWidth());
 
                                 ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
-                                        "translationX", itemView.getWidth(), 0f);
+                                        "translationX", -itemView.getWidth(), 0f);
 
                                 translationX.addListener(new Animator.AnimatorListener() {
                                     @Override
