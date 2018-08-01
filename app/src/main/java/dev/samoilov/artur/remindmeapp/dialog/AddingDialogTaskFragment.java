@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -49,7 +48,7 @@ public class AddingDialogTaskFragment extends DialogFragment
         try {
             addingTaskListener = (AddingTaskListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "must implements AddingTaskListener");
+            throw new ClassCastException(activity.toString() + "must implements AddingTaskistener");
         }
     }
 
@@ -80,8 +79,8 @@ public class AddingDialogTaskFragment extends DialogFragment
 
         calendar = Calendar.getInstance();
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item
-                ,getResources().getStringArray(R.array.priority_levels));
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_dropdown_item, ModelTask.PRIORITY_LEVELS);
 
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -117,7 +116,7 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                task.setTitle(edTitle.getText().toString());
+                task.setTask(edTitle.getText().toString());
                 if (edDate.length()!=0 || edTime.length()!=0){
                     task.setDate(calendar.getTimeInMillis());
                 }
