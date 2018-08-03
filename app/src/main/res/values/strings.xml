@@ -15,5 +15,8 @@
 
     <string name="title_is_emty">Error, title is empty.</string>
 
-    <string name="dialog_title">Adding task</string>
+    <string name="dialog_title">Adding title</string>
+
+    <string name="dialog_removed_task">Are you sure want delete this task?</string>
+    <string name="removed">Removed</string>
 </resources>
