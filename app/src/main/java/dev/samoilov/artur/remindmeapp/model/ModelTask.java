@@ -1,5 +1,7 @@
 package dev.samoilov.artur.remindmeapp.model;
 
+import java.util.Date;
+
 import dev.samoilov.artur.remindmeapp.R;
 
 public class ModelTask implements Item {
@@ -8,27 +10,29 @@ public class ModelTask implements Item {
     public static final int PRIORITY_MEDIUM = 1;
     public static final int PRIORITY_HIGH = 2;
 
-    public static final String[] PRIORITY_LEVELS = {"LOW priority", "MEDIYM priority", "HIGH priority"};
 
     public static final int STATUS_OVERDUE = 0;
     public static final int STATUS_CURRENT = 1;
     public static final int STATUS_DONE = 2;
 
-    private String task;
+    private String title;
     private long date;
     private int priority;
     private int status;
+    private long timeStamp;
 
 
     public ModelTask() {
         this.status = -1;
+        this.timeStamp = new Date().getTime();
     }
 
-    public ModelTask(String task, long date, int priority, int status) {
-        this.task = task;
+    public ModelTask(String title, long date, int priority, int status, long timeStamp) {
+        this.title = title;
         this.date = date;
         this.priority = priority;
         this.status = status;
+        this.timeStamp = timeStamp;
     }
 
     @Override
@@ -41,19 +45,19 @@ public class ModelTask implements Item {
     public int getPriorityColor() {
         switch (getPriority()) {
             case PRIORITY_HIGH:
-                if (getStatus() != STATUS_CURRENT || getStatus() != STATUS_OVERDUE) {
+                if (getStatus() == STATUS_CURRENT || getStatus() == STATUS_OVERDUE) {
                     return R.color.priority_high;
                 } else {
                     return R.color.priority_high_selected;
                 }
             case PRIORITY_MEDIUM:
-                if (getStatus() != STATUS_CURRENT || getStatus() != STATUS_OVERDUE) {
+                if (getStatus() == STATUS_CURRENT || getStatus() == STATUS_OVERDUE) {
                     return R.color.priority_medium;
                 } else {
                     return R.color.priority_medium_selected;
                 }
             case PRIORITY_LOW:
-                if (getStatus() != STATUS_CURRENT || getStatus() != STATUS_OVERDUE) {
+                if (getStatus() == STATUS_CURRENT || getStatus() == STATUS_OVERDUE) {
                     return R.color.priority_low;
                 } else {
                     return R.color.priority_low_selected;
@@ -63,8 +67,8 @@ public class ModelTask implements Item {
         }
     }
 
-    public String getTask() {
-        return task;
+    public String getTitle() {
+        return title;
     }
 
     public long getDate() {
@@ -79,10 +83,14 @@ public class ModelTask implements Item {
         return status;
     }
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
     //set
 
-    public void setTask(String task) {
-        this.task = task;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setDate(long date) {
@@ -95,5 +103,9 @@ public class ModelTask implements Item {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

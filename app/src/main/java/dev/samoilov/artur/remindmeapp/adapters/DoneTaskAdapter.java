@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,7 +57,7 @@ public class DoneTaskAdapter extends TaskAdapter {
             final View itemView = taskViewHolder.itemView;
             final Resources resources = itemView.getResources();
 
-            taskViewHolder.title.setText(modelTask.getTask());
+            taskViewHolder.title.setText(modelTask.getTitle());
             if (modelTask.getDate() != 0) {
                 taskViewHolder.date.setText(Utils.getFullDate(modelTask.getDate()));
             } else {
@@ -77,22 +76,26 @@ public class DoneTaskAdapter extends TaskAdapter {
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+
+                    new android.os.Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            getTaskFragment().removeTaskDialog(taskViewHolder.getLayoutPosition());
+                            getTaskFragment().removeTaskDialog(taskViewHolder.getAdapterPosition());
                         }
-                    }, 1000);
+                    },1000);
+
 
                     return true;
                 }
             });
 
+
             taskViewHolder.priority.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    modelTask.setStatus(ModelTask.STATUS_DONE);
+                    modelTask.setStatus(ModelTask.STATUS_CURRENT);
+
+                    getTaskFragment().activity.dbHelper.update().status(modelTask.getTimeStamp(),ModelTask.STATUS_CURRENT);
 
                     itemView.setBackgroundColor(resources.getColor(R.color.gray_50));
 
@@ -115,10 +118,10 @@ public class DoneTaskAdapter extends TaskAdapter {
                         public void onAnimationEnd(Animator animation) {
 
                             ObjectAnimator translationX = ObjectAnimator.ofFloat(itemView,
-                                    "translationX", 0f, itemView.getWidth());
+                                    "translationX", 0f, -itemView.getWidth());
 
                             ObjectAnimator translationXBack = ObjectAnimator.ofFloat(itemView,
-                                    "translationX", itemView.getWidth(), 0f);
+                                    "translationX", -itemView.getWidth(), 0f);
 
                             translationX.addListener(new Animator.AnimatorListener() {
                                 @Override

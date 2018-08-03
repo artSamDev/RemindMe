@@ -13,16 +13,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
@@ -30,9 +28,14 @@ import dev.samoilov.artur.remindmeapp.model.ModelTask;
 public class AddingDialogTaskFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private EditText edTitle, edDate, edTime;
+    private EditText edTitle;
+    private EditText edDate;
+    private EditText edTime;
     private AddingTaskListener addingTaskListener;
     private Calendar calendar;
+    private CircleImageView mPriorityLow;
+    private CircleImageView mPriorityMedium;
+    private CircleImageView mPriorityHigh;
 
     public interface AddingTaskListener {
 
@@ -71,7 +74,9 @@ public class AddingDialogTaskFragment extends DialogFragment
         TextInputLayout tilTime = view.findViewById(R.id.tilTaskTime);
         edTime = tilTime.getEditText();
 
-        Spinner spinner = view.findViewById(R.id.spPriority);
+        mPriorityLow = view.findViewById(R.id.dialogCirclePriorityLow);
+        mPriorityMedium = view.findViewById(R.id.dialogCirclePriorityMedium);
+        mPriorityHigh = view.findViewById(R.id.dialogCirclePriorityHigh);
 
         builder.setView(view);
 
@@ -79,21 +84,51 @@ public class AddingDialogTaskFragment extends DialogFragment
 
         calendar = Calendar.getInstance();
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, ModelTask.PRIORITY_LEVELS);
-
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mPriorityLow.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                task.setPriority(position);
+            public void onClick(View v) {
+                mPriorityMedium.setBorderWidth(0);
+                mPriorityHigh.setBorderWidth(0);
+                mPriorityMedium.setImageResource(R.color.priority_medium_selected);
+                mPriorityHigh.setImageResource(R.color.priority_high_selected);
+
+
+                mPriorityLow.setBorderWidth(3);
+                mPriorityLow.setImageResource(R.color.priority_low);
+                task.setPriority(ModelTask.PRIORITY_LOW);
             }
+        });
 
+        mPriorityMedium.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onClick(View v) {
+                mPriorityLow.setBorderWidth(0);
+                mPriorityHigh.setBorderWidth(0);
+                mPriorityLow.setImageResource(R.color.priority_low_selected);
+                mPriorityHigh.setImageResource(R.color.priority_high_selected);
+
+
+                mPriorityMedium.setBorderWidth(3);
+                mPriorityMedium.setImageResource(R.color.priority_medium);
+                task.setPriority(ModelTask.PRIORITY_MEDIUM);
 
             }
         });
+
+        mPriorityHigh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPriorityLow.setBorderWidth(0);
+                mPriorityMedium.setBorderWidth(0);
+                mPriorityLow.setImageResource(R.color.priority_low_selected);
+                mPriorityMedium.setImageResource(R.color.priority_medium_selected);
+
+                mPriorityHigh.setBorderWidth(3);
+                mPriorityHigh.setImageResource(R.color.priority_high);
+                task.setPriority(ModelTask.PRIORITY_HIGH);
+            }
+        });
+
 
         edDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +151,12 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                task.setTask(edTitle.getText().toString());
-                if (edDate.length()!=0 || edTime.length()!=0){
+                task.setTitle(edTitle.getText().toString());
+                if (edDate.length() != 0 || edTime.length() != 0) {
                     task.setDate(calendar.getTimeInMillis());
                 }
-                 addingTaskListener.onTaskAdded(task);
+                task.setStatus(ModelTask.STATUS_CURRENT);
+                addingTaskListener.onTaskAdded(task);
                 dialog.dismiss();
             }
         });
@@ -175,15 +211,15 @@ public class AddingDialogTaskFragment extends DialogFragment
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        calendar.set(year,month,dayOfMonth);
+        calendar.set(year, month, dayOfMonth);
         edDate.setText(Utils.getDate(calendar.getTimeInMillis()));
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
-        calendar.set(Calendar.MINUTE,minute);
-        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
         edTime.setText(Utils.getTime(calendar.getTimeInMillis()));
     }
 }
