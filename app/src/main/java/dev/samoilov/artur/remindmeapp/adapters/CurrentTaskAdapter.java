@@ -76,6 +76,13 @@ public class CurrentTaskAdapter extends TaskAdapter {
             taskViewHolder.priority.setColorFilter(resources.getColor(modelTask.getPriorityColor()));
             taskViewHolder.priority.setImageResource(R.drawable.circle);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getTaskFragment().showTaskDialogEdit(modelTask);
+                }
+            });
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

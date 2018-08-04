@@ -19,13 +19,12 @@ import dev.samoilov.artur.remindmeapp.model.Item;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 public class DoneTaskAdapter extends TaskAdapter {
+
     private static final int TYPE_TASK = 0;
-    private static final int TYPE_SEPARATOR = 1;
 
     public DoneTaskAdapter(DoneTaskFragment taskFragment) {
         super(taskFragment);
     }
-
 
     @NonNull
     @Override

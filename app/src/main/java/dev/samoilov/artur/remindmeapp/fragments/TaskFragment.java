@@ -1,6 +1,7 @@
 package dev.samoilov.artur.remindmeapp.fragments;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.ColorSpace;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import dev.samoilov.artur.remindmeapp.MainActivity;
 import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.adapters.TaskAdapter;
+import dev.samoilov.artur.remindmeapp.dialog.EditTaskDialogFragment;
 import dev.samoilov.artur.remindmeapp.model.Item;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
@@ -68,7 +70,7 @@ public abstract class TaskFragment extends Fragment {
             final long timeStamp = removingTask.getTimeStamp();
             final boolean[] isRemoved = {false};
 
-            builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(R.string.removed, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     adapter.removeItem(position);
@@ -103,7 +105,7 @@ public abstract class TaskFragment extends Fragment {
                 }
             });
 
-            builder.setNegativeButton(R.string.removed, new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
@@ -112,6 +114,15 @@ public abstract class TaskFragment extends Fragment {
         }
 
             builder.show();
+    }
+
+    public void showTaskDialogEdit(ModelTask task){
+        DialogFragment editTaskDialogFragment = EditTaskDialogFragment.newInstance(task);
+        editTaskDialogFragment.show(getActivity().getFragmentManager(), "EditTaskDialogFragment");
+    }
+
+    public void updateTask(ModelTask task){
+        adapter.updateTask(task);
     }
 
     public abstract void addTaskFromDB();

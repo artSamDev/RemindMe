@@ -10,6 +10,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import dev.samoilov.artur.remindmeapp.fragments.TaskFragment;
 import dev.samoilov.artur.remindmeapp.model.Item;
+import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 public abstract class TaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -40,6 +41,18 @@ public abstract class TaskAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (position >= 0 && position <= getItemCount() - 1) {
             items.remove(position);
             notifyItemRemoved(position);
+        }
+    }
+
+    public void updateTask(ModelTask updateTask){
+        for (int i = 0; i < getItemCount(); i++) {
+            if (getItem(i).isTask()){
+                ModelTask task = (ModelTask) getItem(i);
+                if (updateTask.getTimeStamp() == task.getTimeStamp()){
+                    removeItem(i);
+                    getTaskFragment().addTask(updateTask,false);
+                }
+            }
         }
     }
 

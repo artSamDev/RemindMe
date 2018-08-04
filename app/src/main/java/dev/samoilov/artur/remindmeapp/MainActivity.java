@@ -15,12 +15,13 @@ import android.widget.Toast;
 import dev.samoilov.artur.remindmeapp.adapters.TabAdapter;
 import dev.samoilov.artur.remindmeapp.database.DBHelper;
 import dev.samoilov.artur.remindmeapp.dialog.AddingDialogTaskFragment;
+import dev.samoilov.artur.remindmeapp.dialog.EditTaskDialogFragment;
 import dev.samoilov.artur.remindmeapp.fragments.DoneTaskFragment;
 import dev.samoilov.artur.remindmeapp.fragments.CurrentTaskFragment;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
 public class MainActivity extends AppCompatActivity implements AddingDialogTaskFragment.AddingTaskListener
-        , CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener{
+        , CurrentTaskFragment.OnTaskDoneListener, DoneTaskFragment.OnTaskRestoreListener, EditTaskDialogFragment.EditingTaskListener{
 
     FragmentManager fragmentManager;
 
@@ -131,5 +132,11 @@ public class MainActivity extends AppCompatActivity implements AddingDialogTaskF
     @Override
     public void onTaskRestore(ModelTask task) {
         currentTaskFragment.addTask(task, false);
+    }
+
+    @Override
+    public void onTaskEdited(ModelTask updatedTask) {
+        currentTaskFragment.updateTask(updatedTask);
+        dbHelper.update().task(updatedTask);
     }
 }

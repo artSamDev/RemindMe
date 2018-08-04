@@ -25,44 +25,57 @@ import dev.samoilov.artur.remindmeapp.R;
 import dev.samoilov.artur.remindmeapp.Utils;
 import dev.samoilov.artur.remindmeapp.model.ModelTask;
 
-public class AddingDialogTaskFragment extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EditTaskDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener  {
+    private Calendar calendar;
 
     private EditText edTitle;
     private EditText edDate;
     private EditText edTime;
 
-    private AddingTaskListener addingTaskListener;
+    private EditingTaskListener editingTaskListener;
 
-    private Calendar calendar;
+    public interface EditingTaskListener {
 
-    private CircleImageView mPriorityLow;
-    private CircleImageView mPriorityMedium;
-    private CircleImageView mPriorityHigh;
+        void onTaskEdited(ModelTask updatedTask);
 
-    public interface AddingTaskListener {
+    }
+    public static EditTaskDialogFragment newInstance(ModelTask task) {
+        EditTaskDialogFragment editTaskDialogFragment = new EditTaskDialogFragment();
 
-        void onTaskAdded(ModelTask newTask);
-        void onTaskAddingCancel();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", task.getTitle());
+        bundle.putLong("date", task.getDate());
+        bundle.putInt("priority", task.getPriority());
+        bundle.putLong("time_stump", task.getTimeStamp());
 
+        editTaskDialogFragment.setArguments(bundle);
+        return editTaskDialogFragment;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
-            addingTaskListener = (AddingTaskListener) activity;
+            editingTaskListener = (EditingTaskListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "must implements AddingTaskListener");
+            throw new ClassCastException(activity.toString() + "must implement EditingTaskListener");
         }
     }
-
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        Bundle bundle = getArguments();
+        String title = bundle.getString("title");
+        long date = bundle.getLong("date", 0);
+        int priority = bundle.getInt("priority", 0);
+        long timeStamp = bundle.getLong("time_stump", 0);
+
+        final ModelTask task = new ModelTask(title, date, priority, 0, timeStamp);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.dialog_title);
+        builder.setTitle(R.string.edit_dialog_title);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_task, null);
@@ -76,15 +89,38 @@ public class AddingDialogTaskFragment extends DialogFragment
         TextInputLayout tilTime = view.findViewById(R.id.tilTaskTime);
         edTime = tilTime.getEditText();
 
-        mPriorityLow = view.findViewById(R.id.dialogCirclePriorityLow);
-        mPriorityMedium = view.findViewById(R.id.dialogCirclePriorityMedium);
-        mPriorityHigh = view.findViewById(R.id.dialogCirclePriorityHigh);
+        final CircleImageView mPriorityLow = view.findViewById(R.id.dialogCirclePriorityLow);
+        final CircleImageView mPriorityMedium = view.findViewById(R.id.dialogCirclePriorityMedium);
+        final CircleImageView mPriorityHigh = view.findViewById(R.id.dialogCirclePriorityHigh);
+
+        edTitle.setText(task.getTitle());
+        edTitle.setSelection(edTitle.length());
+
+        if (task.getDate() != 0) {
+            edDate.setText(Utils.getDate(task.getDate()));
+            edTime.setText(Utils.getTime(task.getDate()));
+        }
+
+        if (task.getPriority() == 0) {
+            mPriorityLow.setBorderWidth(3);
+            mPriorityLow.setImageResource(R.color.priority_low);
+            task.setPriority(ModelTask.PRIORITY_LOW);
+        } else if (task.getPriority() == 1) {
+            mPriorityMedium.setBorderWidth(3);
+            mPriorityMedium.setImageResource(R.color.priority_medium);
+            task.setPriority(ModelTask.PRIORITY_MEDIUM);
+        } else {
+            mPriorityHigh.setBorderWidth(3);
+            mPriorityHigh.setImageResource(R.color.priority_high);
+            task.setPriority(ModelTask.PRIORITY_HIGH);
+        }
 
         builder.setView(view);
 
-        final ModelTask task = new ModelTask();
-
         calendar = Calendar.getInstance();
+        if (edDate.length() != 0 || edTime.length() != 0){
+            calendar.setTimeInMillis(task.getDate());
+        }
 
         mPriorityLow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +172,7 @@ public class AddingDialogTaskFragment extends DialogFragment
             @Override
             public void onClick(View v) {
                 DatePickerFragment datePickerDialog = new DatePickerFragment();
-                datePickerDialog.setCallBack(AddingDialogTaskFragment.this);
+                datePickerDialog.setCallBack(EditTaskDialogFragment.this);
                 datePickerDialog.show(getFragmentManager(), "DatePickerFragment");
             }
         });
@@ -145,7 +181,7 @@ public class AddingDialogTaskFragment extends DialogFragment
             @Override
             public void onClick(View v) {
                 TimePickerFragment timePickerFragment = new TimePickerFragment();
-                timePickerFragment.setTime(AddingDialogTaskFragment.this);
+                timePickerFragment.setTime(EditTaskDialogFragment.this);
                 timePickerFragment.show(getFragmentManager(), "TimePickerFragment");
             }
         });
@@ -155,10 +191,14 @@ public class AddingDialogTaskFragment extends DialogFragment
             public void onClick(DialogInterface dialog, int which) {
                 task.setTitle(edTitle.getText().toString());
                 if (edDate.length() != 0 || edTime.length() != 0) {
-                    task.setDate(calendar.getTimeInMillis());
+                    if (edTime.length() == 0) {
+                        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1);
+                        task.setDate(calendar.getTimeInMillis());
+                    } else {
+                        task.setDate(calendar.getTimeInMillis());
+                    }
                 }
-                task.setStatus(ModelTask.STATUS_CURRENT);
-                addingTaskListener.onTaskAdded(task);
+                editingTaskListener.onTaskEdited(task);
                 dialog.dismiss();
             }
         });
@@ -166,7 +206,6 @@ public class AddingDialogTaskFragment extends DialogFragment
         builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addingTaskListener.onTaskAddingCancel();
                 dialog.cancel();
             }
         });
@@ -209,7 +248,6 @@ public class AddingDialogTaskFragment extends DialogFragment
 
         return alertDialog;
     }
-
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
